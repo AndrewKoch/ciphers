@@ -1,17 +1,49 @@
 import logging
 import argparse
 
-import cipher_tests
+
+def check_validity(crib):
+    if not crib.isalpha():
+        raise Exception("Letters only.")
 
 
-def one(crib, seed):  # Caesar
-    "Takes plaintext and seed and returns ciphertext with whitespace removed."
-
-    logger = logging.getLogger()
-
-    logger.info("Received plaintext is %s with a seed of %s", crib, seed)
+def format_input(crib):
+    "Removes whitespace, verifies characters are letters, and capitalizes them."
     crib = crib.replace(" ", "")
+    check_validity(crib)
     crib = crib.upper()
+    return crib
+
+
+def format_output(ciphertext):
+    "Seperates a string into blocks of five characters"
+    logger = logging.getLogger()
+    logger.debug("Length of ciphertext is %s", len(ciphertext))
+
+    if len(ciphertext) <= 5:
+        return ciphertext
+
+    blocks = len(ciphertext) // 5
+    logger.debug("Number of blocks: %s", blocks)
+
+    block_index = 5
+    blocked_cipher = ciphertext[:5]
+    while (block_index / 5) < blocks:
+        blocked_cipher += " " + ciphertext[block_index:block_index+5]
+        block_index += 5
+
+    if (len(ciphertext) % 5) != 0:
+        blocked_cipher += " " + ciphertext[block_index:len(ciphertext)]
+    logger.info("Returning blocked ciphertext as %s", blocked_cipher)
+    return blocked_cipher
+
+
+# Simple Substitions
+def one(crib, seed):  # Caesar
+    "Takes plaintext and seed and returns ciphertext"
+    logger = logging.getLogger()
+    logger.info("Received plaintext is %s with a seed of %s", crib, seed)
+    crib = format_input(crib)
 
     ciphertext = ""
     for el in crib:
@@ -25,18 +57,15 @@ def one(crib, seed):  # Caesar
         ciphertext += chr(ord_el)
         logger.debug("Encrypted letter is %s", chr(ord_el))
 
-    logger.info("Ciphertext is %s\n", ciphertext)
-    return ciphertext
+    logger.info("Ciphertext is %s\n", format_output(ciphertext))
+    return format_output(ciphertext)
 
 
 def two(crib):  # Atbash
-    "Takes plaintext of letters and returns ciphertext."
+    "Takes plaintext of letters and returns ciphertext"
     logger = logging.getLogger()
-
     logger.info("Received plaintext is %s", crib)
-    if not crib.isalpha():
-        raise Exception("Letters only.")
-    crib = crib.upper()
+    crib = format_input(crib)
 
     ciphertext = ""
     for el in crib:
@@ -63,6 +92,8 @@ def two(crib):  # Atbash
 
             logger.debug("Encrypted letter is %s", chr(ord_el))
             ciphertext += chr(ord_el)
+
+    ciphertext = format_output(ciphertext)
     logger.info("Ciphertext is %s\n", ciphertext)
     return ciphertext
 
@@ -78,7 +109,6 @@ def main(args):
 
     logging.basicConfig(level=level, format=log_fmt)
     logger = logging.getLogger()
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Set logger level")
