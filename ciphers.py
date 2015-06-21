@@ -5,15 +5,27 @@ import cipher_tests
 
 
 def one(crib, seed):  # Caesar
-    "Takes plaintext and seed and returns ciphertext."
+    "Takes plaintext and seed and returns ciphertext with whitespace removed."
 
     logger = logging.getLogger()
 
     logger.info("Received plaintext is %s with a seed of %s", crib, seed)
+    crib = crib.replace(" ", "")
+    crib = crib.upper()
+
     ciphertext = ""
     for el in crib:
+        logger.debug("Plaintext letter is %s", el)
+
         ord_el = ord(el) + seed
+        if ord_el > 90:
+            ord_el -= 26
+        logger.debug("Unicode integer value is %s", ord_el)
+
         ciphertext += chr(ord_el)
+        logger.debug("Encrypted letter is %s", chr(ord_el))
+
+    logger.info("Ciphertext is %s\n", ciphertext)
     return ciphertext
 
 
@@ -67,15 +79,10 @@ def main(args):
     logging.basicConfig(level=level, format=log_fmt)
     logger = logging.getLogger()
 
-    if args.run_tests:
-        cipher_tests.test_one()
-        cipher_tests.test_two()
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Set logger level")
     parser.add_argument("--debug", action="store_true")
-    parser.add_argument("--run_tests", action="store_true")
 
     args = parser.parse_args()
 
