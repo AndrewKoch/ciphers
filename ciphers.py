@@ -94,7 +94,7 @@ def main(args):
     logger = logging.getLogger()
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Set logger level")
+    parser = argparse.ArgumentParser(description="Encryptions")
     parser.add_argument("--debug", action="store_true")
 
     args = parser.parse_args()
