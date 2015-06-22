@@ -10,8 +10,10 @@ class SimpleSubs(object):
     def __init__(self, crib):
         self.crib = utils.format_input(crib)
         self.ciphertext = ""
-
         self.logger = logging.getLogger()
+
+    def make_alphabet(self):
+        return [chr(i) for i in range(65, 91)]
 
     def encrypt_caesar(self, shift):
         "Applies single shift Caesar Encryption."
@@ -21,61 +23,29 @@ class SimpleSubs(object):
                 n -= 26
             self.ciphertext += chr(n)
 
-        self.logger.info("Ciphertext is %s", self.ciphertext)
         self.ciphertext = utils.format_output(self.ciphertext)
+        self.logger.debug("Ciphertext is %s", self.ciphertext)
         return self.ciphertext
 
     def encrypt_atbash(self):
-        pass
+        "Applies reverse alphabet to plaintext as Atbash Cipher"
+        rev_alpha = self.make_alphabet()[::-1]
+        for l in self.crib:
+            n = ord(l) - 65
+            self.ciphertext += rev_alpha[n]
+
+        self.ciphertext = utils.format_output(self.ciphertext)
+        self.logger.debug("Ciphertext is %s", self.ciphertext)
+        return self.ciphertext
 
 
-def two(crib):  # Atbash
-    "Takes plaintext of letters and returns ciphertext"
-    logger = logging.getLogger()
-    logger.info("Received plaintext is %s", crib)
-    crib = utils.format_input(crib)
-
-    ciphertext = ""
-    for el in crib:
-        if el <= "n":
-            logger.debug("Plaintext letter is %s", el)
-
-            shift = ((ord("M") - ord(el)) * 2 + 1)
-            logger.debug("Shift is %s", shift)
-
-            ord_el = ord(el) + shift
-            logger.debug("Unicode integer value is %s", ord_el)
-
-            logger.debug("Encrypted letter is %s", chr(ord_el))
-            ciphertext += chr(ord_el)
-
-        elif el >= "M":
-            logger.debug("Plaintext letter is %s", el)
-
-            shift = ((ord(el) - ord("N")) * 2 + 1)
-            logger.debug("Shift is %s", shift)
-
-            ord_el = ord(el) - shift
-            logger.debug("Unicode integer value is %s", ord_el)
-
-            logger.debug("Encrypted letter is %s", chr(ord_el))
-            ciphertext += chr(ord_el)
-
-    ciphertext = utils.format_output(ciphertext)
-    logger.info("Ciphertext is %s\n", ciphertext)
-    return ciphertext
-
-
-# Polyalphabetic substitution
 class Vigenere(object):
+
     def __init__(self, crib, key):
         self.crib = utils.format_input(crib)
         self._user_key = utils.format_input(key)
         self.ciphertext = ""
         self.logger = logging.getLogger()
-
-    def __repr__(self):
-        return self.ciphertext
 
     def make_line(self, seed):
         line = [chr(i) for i in range(65, 91)]
@@ -95,7 +65,7 @@ class Vigenere(object):
         self.logger.debug("Constructed Vigenere table as:\n%s", self.table)
 
         self.full_key = self._key_maker(self._user_key, len(self.crib))
-        self.logger.info("Full key is %s", self.full_key)
+        self.logger.debug("Full key is %s", self.full_key)
 
         self._coordinates = []
         for i in range(len(self.full_key)):
@@ -108,7 +78,7 @@ class Vigenere(object):
             self.ciphertext += self.table[x][y]
         self.ciphertext = utils.format_output(self.ciphertext)
 
-        self.logger.info("Ciphertext is %s", self.ciphertext)
+        self.logger.debug("Ciphertext is %s", self.ciphertext)
         return self.ciphertext
 
 

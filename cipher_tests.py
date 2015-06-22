@@ -32,11 +32,15 @@ class CipherTests(unittest.TestCase):
 
     def test_atbash(self):
         self.logger.info("Testing the Atbash Cipher")
-        self.assertEqual(ciphers.two("abc"), "ZYX"),
-        self.assertEqual(ciphers.two("zyx"), "ABC")
-        self.assertEqual(ciphers.two("AlephTavBethShin"), "ZOVKS GZEYV GSHSR M")
-        with self.assertRaises(Exception):
-            self.assertEqual(ciphers.two("ab3"))
+
+        atbash_one = ciphers.SimpleSubs("abc")
+        self.assertEqual(atbash_one.encrypt_atbash(), "ZYX"),
+
+        atbash_two = ciphers.SimpleSubs("zyx")
+        self.assertEqual(atbash_two.encrypt_atbash(), "ABC")
+
+        atbash_one = ciphers.SimpleSubs("AlephTavBethShin")
+        self.assertEqual(atbash_one.encrypt_atbash(), "ZOVKS GZEYV GSHSR M")
 
     def test_vigenere(self):
         self.logger.info("Testing the Vigenere Cipher")

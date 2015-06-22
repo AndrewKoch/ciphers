@@ -32,5 +32,5 @@ def format_output(ciphertext):
 
     if (len(ciphertext) % 5) != 0:
         blocked_cipher += " " + ciphertext[block_index:len(ciphertext)]
-    logger.info("Returning blocked ciphertext as %s", blocked_cipher)
+    logger.debug("Returning blocked ciphertext as %s", blocked_cipher)
     return blocked_cipher
