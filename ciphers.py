@@ -47,18 +47,18 @@ class Vigenere(object):
         self.ciphertext = ""
         self.logger = logging.getLogger()
 
-    def make_line(self, seed):
+    def _make_line(self, seed):
         line = [chr(i) for i in range(65, 91)]
         return line[seed:] + [chr(i) for i in range(65, 65 + seed)]
 
     def _make_table(self):
-        return [self.make_line(i) for i in range(0, 26)]
+        return [self._make_line(i) for i in range(0, 26)]
 
     def _key_maker(self, key, crib_len):
-        self._key_iters = (crib_len) // len(key)
-        self._key_partial = key[:crib_len % len(key)]
+        key_iters = (crib_len) // len(key)
+        key_partial = key[:crib_len % len(key)]
 
-        return (key * self._key_iters) + self._key_partial
+        return (key * key_iters) + key_partial
 
     def encrypt(self):
         self.table = self._make_table()
@@ -67,14 +67,14 @@ class Vigenere(object):
         self.full_key = self._key_maker(self._user_key, len(self.crib))
         self.logger.debug("Full key is %s", self.full_key)
 
-        self._coordinates = []
+        _coordinates = []
         for i in range(len(self.full_key)):
-            self._row = ord(self.full_key[i]) - 65
-            self._col = ord(self.crib[i]) - 65
-            self._coordinates.append([self._row, self._col])
-        self.logger.debug("Table coordinates are %s", self._coordinates)
+            _row = ord(self.full_key[i]) - 65
+            _col = ord(self.crib[i]) - 65
+            _coordinates.append([_row, _col])
+        self.logger.debug("Table coordinates are %s", _coordinates)
 
-        for x, y in self._coordinates:
+        for x, y in _coordinates:
             self.ciphertext += self.table[x][y]
         self.ciphertext = utils.format_output(self.ciphertext)
 
